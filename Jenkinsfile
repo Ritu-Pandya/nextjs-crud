@@ -1,12 +1,8 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'Node 22'
-    }
-
     environment {
-        CI = 'false' // React default, disable strict CI
+        CI = 'false'
     }
 
     stages {
@@ -18,22 +14,22 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                bat 'npm install'
             }
         }
 
         stage('Build React App') {
             steps {
-                sh 'npm run build'
+                bat 'npm run build'
             }
         }
 
         stage('Deploy to Vercel') {
             steps {
                 withCredentials([string(credentialsId: 'vercel-token', variable: 'VERCEL_TOKEN')]) {
-                    sh '''
+                    bat '''
                         npm install -g vercel
-                        vercel --token=$VERCEL_TOKEN --prod --confirm
+                        vercel --token=%VERCEL_TOKEN% --prod --confirm
                     '''
                 }
             }
